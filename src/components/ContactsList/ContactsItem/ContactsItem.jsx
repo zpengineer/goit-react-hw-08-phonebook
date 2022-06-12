@@ -1,29 +1,58 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Loader from 'components/Loader/Loader';
+import { Link, useLocation } from 'react-router-dom';
+
+import TableRow from '@mui/material/TableRow';
+import TableCell from '@mui/material/TableCell';
+import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CreateIcon from '@mui/icons-material/Create';
+
 import { useDeleteContactMutation } from '../../../redux/phonebook/phonebook-slice';
 import styles from './ContactsItem.module.css';
 
 const ContactsItem = ({ id, name, number }) => {
   const [deleteContact, { isLoading: isDeleting }] = useDeleteContactMutation();
+  const location = useLocation();
 
   return (
-    <li className={styles.item}>
-      <div className={styles.wrapper}>
-        <span className={styles.decoration}></span>
-        <p className={styles.text}>
-          {name}: <span className={styles.number}>{number}</span>
-        </p>
-      </div>
-      <button
-        className={styles.button}
-        disabled={isDeleting}
-        type="Submit"
-        onClick={() => deleteContact(id)}
-      >
-        {isDeleting ? <Loader /> : 'Delete'}
-      </button>
-    </li>
+    <>
+      <TableRow key={id}>
+        <TableCell>{name}</TableCell>
+        <TableCell>{number}</TableCell>
+        <TableCell align="right">
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<CreateIcon />}
+          >
+            <Link
+              className={styles.link}
+              to={`update/${id}`}
+              state={{ from: location }}
+            >
+              Update
+            </Link>
+          </Button>
+        </TableCell>
+
+        <TableCell align="right">
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={<DeleteIcon />}
+            disabled={isDeleting}
+            onClick={() => deleteContact(id)}
+          >
+            Delete
+          </Button>
+        </TableCell>
+      </TableRow>
+
+      {/* <Routes>
+        <Route path={`contacts/update/${id}`} element={<UpdateContact />} />
+      </Routes> */}
+    </>
   );
 };
 

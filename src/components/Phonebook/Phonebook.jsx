@@ -2,16 +2,21 @@ import { useState } from 'react';
 import { nanoid } from 'nanoid';
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
+
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+
 import {
   useFetchContactsQuery,
   useAddContactMutation,
 } from '../../redux/phonebook/phonebook-slice';
-import Loader from 'components/Loader/Loader';
-import styles from './Phonebook.module.css';
 
 function Phonebook() {
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [number, setNumber] = useState('');
   const { data: contacts } = useFetchContactsQuery();
   const [addContact, { isLoading }] = useAddContactMutation();
 
@@ -25,7 +30,7 @@ function Phonebook() {
       case 'name':
         return setName(value);
       case 'number':
-        return setPhone(value);
+        return setNumber(value);
       default:
         return;
     }
@@ -50,44 +55,59 @@ function Phonebook() {
       return;
     }
 
-    addContact({ name, phone });
+    addContact({ name, number });
 
     setName('');
-    setPhone('');
+    setNumber('');
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
-      <label htmlFor={nameInputId} className={styles.label}>
-        <p className={styles.text}>Name</p>
-        <input
-          className={styles.input}
-          type="text"
-          name="name"
-          value={name}
-          id={nameInputId}
-          onChange={handleChange}
-        />
-      </label>
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Typography component="h2" variant="h3">
+          Phonebook
+        </Typography>
 
-      <label htmlFor={numberInputId} className={styles.label}>
-        <p className={styles.text}>Number</p>
-        <input
-          className={styles.input}
-          type="tel"
-          name="number"
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\{1,4}[-.\s]?\d{1,9}"
-          title="Phone number must be digits and can contain spaces,dashes, parentheses and can start with +"
-          required
-          id={numberInputId}
-          value={phone}
-          onChange={handleChange}
-        />
-      </label>
-      <button type="submit" className={styles.button} disabled={isLoading}>
-        {isLoading ? <Loader /> : 'Add contact'}
-      </button>
-    </form>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField
+            margin="normal"
+            fullWidth
+            id={nameInputId}
+            label="Name"
+            name="name"
+            value={name}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="normal"
+            fullWidth
+            name="number"
+            label="Number"
+            type="tel"
+            id={numberInputId}
+            value={number}
+            autoComplete="current-password"
+            onChange={handleChange}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            disabled={isLoading}
+          >
+            Add contact
+          </Button>
+        </Box>
+      </Box>
+    </Container>
   );
 }
 
