@@ -19,7 +19,7 @@ const UpdateContact = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
   const [url, setUrl] = useState(location.state.from);
-  const [updateContact, { isLoading }] = useUpdateContactMutation();
+  const [updateContact] = useUpdateContactMutation();
 
   const nameInputId = nanoid();
   const numberInputId = nanoid();
